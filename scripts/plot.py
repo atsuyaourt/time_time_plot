@@ -6,7 +6,8 @@ from matplotlib.ticker import MultipleLocator, FixedLocator, FuncFormatter
 from matplotlib.dates import DayLocator, date2num, num2date
 
 INPUT_CSV = 'input/Baguio.csv'
-CMAP = plt.cm.RdBu
+OUT_DIR = 'img/'
+CMAP = plt.get_cmap('winter')
 # LEVELS = np.arange(-1200, 1201, 400)
 LEVELS = np.arange(-25, 26, 5)
 
@@ -42,17 +43,19 @@ def reject_outliers(sr, iq_range=0.5):
     return sr[ (sr - median).abs() <= iqr]
 
 
-def tt_plot(df):
+def tt_plot(df, **kwargs):
+    # reshape the data
+    _df = df.pivot(df.columns[0], df.columns[1], df.columns[2])
 
     # prepare the data for plotting
-    X = df.columns.values
-    Y = df.index.values
-    Z = df.values
+    X = _df.columns.values
+    Y = _df.index.values
+    Z = _df.values
     x , y = np.meshgrid(X, Y)
 
     # plot
     fig, ax  = plt.subplots()
-    cs = ax.contourf(x, y, Z, levels=LEVELS, cmap=CMAP)
+    cs = ax.contourf(x, y, Z, **kwargs)
     fig.colorbar(cs, ax=ax, shrink=0.4)
 
     # format the plot
@@ -84,13 +87,11 @@ df['DATE'] = pd.to_datetime(dict(year=2000, month=df['MM'], day=df['DD']))
 if ROBUST:
     df['RR'] = reject_outliers(df['RR'])
 
-# reshape the data
-df2 = df.pivot('YY', 'DATE', 'RR')
-
-fig, ax = tt_plot(df2)
-
-# show the plot
-# plt.show()
+plot_opts = {
+    'levels': LEVELS,
+    'cmap': CMAP
+}
+fig, ax = tt_plot(df[['YY', 'DATE', 'RR']])
 
 # save the plot
-plt.savefig('plot.png')
+plt.savefig(OUT_DIR + 'plot.png')
