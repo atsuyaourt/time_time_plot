@@ -43,6 +43,20 @@ def reject_outliers(sr, iq_range=0.5):
     return sr[ (sr - median).abs() <= iqr]
 
 
+def format_plot(ax):
+    ax.xaxis.set_ticks_position('both')
+    ax.yaxis.set_ticks_position('both')
+    ax.tick_params(which='both', direction='in')
+    ax.tick_params(which='major', width=1.00)
+    ax.tick_params(which='major', length=5)
+    ax.tick_params(which='minor', width=0.75)
+    ax.tick_params(which='minor', length=2.5)
+    ax.xaxis.set_minor_locator(DayLocator())
+    ax.xaxis.set_major_formatter(FuncFormatter(CustomDateFormatter))
+    ax.yaxis.set_major_locator(MultipleLocator(5))
+    ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+
 def tt_plot(df, **kwargs):
     # reshape the data
     _df = df.pivot(df.columns[0], df.columns[1], df.columns[2])
@@ -59,18 +73,8 @@ def tt_plot(df, **kwargs):
     fig.colorbar(cs, ax=ax, shrink=0.4)
 
     # format the plot
-    ax.xaxis.set_ticks_position('both')
-    ax.yaxis.set_ticks_position('both')
-    ax.tick_params(which='both', direction='in')
-    ax.tick_params(which='major', width=1.00)
-    ax.tick_params(which='major', length=5)
-    ax.tick_params(which='minor', width=0.75)
-    ax.tick_params(which='minor', length=2.5)
+    format_plot(ax)
     ax.xaxis.set_major_locator(CustomDateLocator(X))
-    ax.xaxis.set_minor_locator(DayLocator())
-    ax.xaxis.set_major_formatter(FuncFormatter(CustomDateFormatter))
-    ax.yaxis.set_major_locator(MultipleLocator(5))
-    ax.yaxis.set_minor_locator(MultipleLocator(1))
 
     fig.tight_layout()
 
