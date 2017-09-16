@@ -7,8 +7,7 @@ from matplotlib.dates import DayLocator, date2num, num2date
 
 INPUT_CSV = 'input/Baguio.csv'
 OUT_DIR = 'img/'
-CMAP = plt.get_cmap('winter')
-# LEVELS = np.arange(-1200, 1201, 400)
+CMAP = plt.get_cmap('winter') # see https://matplotlib.org/examples/color/colormaps_reference.html
 LEVELS = np.arange(-25, 26, 5)
 
 # Option to remove outliers, change to False to turn off
